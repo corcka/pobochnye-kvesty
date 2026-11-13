@@ -73,6 +73,7 @@
   .thumb:hover{transform:translateY(-3px) rotate(-.6deg)}
   .thumb img{width:100%;height:100%;display:block}
 
+  footer{padding:10px 16px 18px;text-align:center;color:#56534d;font-size:11px}
   @media (max-width:640px){
     .nav{display:none}
     header{padding:14px 14px 4px}
@@ -113,8 +114,22 @@
   </div>
   <div class="grid" id="grid"></div>
 </main>
+<footer>Сайт использует Яндекс Метрику для статистики посещений.</footer>
 
 <script>
+
+// ===== Яндекс Метрика =====
+const YM_ID = 0; // ← номер счётчика
+function track(goal, params){ try{ if (YM_ID && window.ym) ym(YM_ID, "reachGoal", goal, params); }catch(e){} }
+if (YM_ID){
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();
+  for (var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window,document,"script","https://mc.yandex.ru/metrika/tag.js","ym");
+  ym(YM_ID,"init",{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true});
+  window.addEventListener("error", e => track("js_error", {message:String(e.message), source:(e.filename||"")+":"+(e.lineno||"")}));
+  window.addEventListener("unhandledrejection", e => track("js_error", {message:String(e.reason)}));
+}
 const CARDS = [{"suit": "Правила", "title": "Как играть", "icons": [], "file": "cards/000.webp"}, {"suit": "Правила", "title": "Значки", "icons": ["Дуэль", "Тайная", "Блокнот", "Модификатор"], "file": "cards/001.webp"}, {"suit": "Найди", "title": "Место преступления", "icons": ["Дуэль"], "file": "cards/002.webp"}, {"suit": "Найди", "title": "Ингредиенты для зелья", "icons": [], "file": "cards/003.webp"}, {"suit": "Найди", "title": "Собери фазу", "icons": [], "file": "cards/004.webp"}, {"suit": "Найди", "title": "Портал", "icons": [], "file": "cards/005.webp"}, {"suit": "Найди", "title": "Точка сохранения", "icons": [], "file": "cards/006.webp"}, {"suit": "Найди", "title": "Лица вокруг", "icons": [], "file": "cards/007.webp"}, {"suit": "Найди", "title": "Пасхалка", "icons": [], "file": "cards/008.webp"}, {"suit": "Найди", "title": "Шифровка", "icons": [], "file": "cards/009.webp"}, {"suit": "Найди", "title": "Сундук с лутом", "icons": [], "file": "cards/010.webp"}, {"suit": "Найди", "title": "Дары воды", "icons": [], "file": "cards/011.webp"}, {"suit": "Найди", "title": "Древний артефакт", "icons": ["Дуэль"], "file": "cards/012.webp"}, {"suit": "Найди", "title": "Строго по цвету", "icons": [], "file": "cards/013.webp"}, {"suit": "Найди", "title": "Трофей", "icons": [], "file": "cards/014.webp"}, {"suit": "Найди", "title": "Маскировка", "icons": [], "file": "cards/015.webp"}, {"suit": "Найди", "title": "Бестиарий", "icons": [], "file": "cards/016.webp"}, {"suit": "Найди", "title": "Призрачное место", "icons": [], "file": "cards/017.webp"}, {"suit": "Найди", "title": "Это база", "icons": ["Дуэль"], "file": "cards/018.webp"}, {"suit": "Сними", "title": "Загрузочный экран", "icons": [], "file": "cards/019.webp"}, {"suit": "Сними", "title": "Улика под увеличением", "icons": ["Дуэль"], "file": "cards/020.webp"}, {"suit": "Сними", "title": "Ачивка разблокирована", "icons": [], "file": "cards/021.webp"}, {"suit": "Сними", "title": "Постер", "icons": [], "file": "cards/022.webp"}, {"suit": "Сними", "title": "Обложка альбома", "icons": [], "file": "cards/023.webp"}, {"suit": "Сними", "title": "Вещдок", "icons": [], "file": "cards/024.webp"}, {"suit": "Сними", "title": "Без контекста", "icons": ["Дуэль"], "file": "cards/025.webp"}, {"suit": "Сними", "title": "Две версии", "icons": [], "file": "cards/026.webp"}, {"suit": "Сними", "title": "Кат-сцена", "icons": [], "file": "cards/027.webp"}, {"suit": "Сними", "title": "По ту сторону", "icons": [], "file": "cards/028.webp"}, {"suit": "Сними", "title": "Патчноут", "icons": [], "file": "cards/029.webp"}, {"suit": "Сними", "title": "Карточка существа", "icons": [], "file": "cards/030.webp"}, {"suit": "Сними", "title": "Хоррор", "icons": [], "file": "cards/031.webp"}, {"suit": "Сними", "title": "Игрушечный город", "icons": [], "file": "cards/032.webp"}, {"suit": "Сними", "title": "Выбор персонажа", "icons": [], "file": "cards/033.webp"}, {"suit": "Сними", "title": "Три подсказки", "icons": ["Дуэль"], "file": "cards/034.webp"}, {"suit": "Сними", "title": "POV: главный герой", "icons": [], "file": "cards/035.webp"}, {"suit": "Сделай", "title": "Квест «Принеси»", "icons": [], "file": "cards/036.webp"}, {"suit": "Сделай", "title": "Ритуал на удачу", "icons": [], "file": "cards/037.webp"}, {"suit": "Сделай", "title": "Походка класса", "icons": [], "file": "cards/038.webp"}, {"suit": "Сделай", "title": "Кооп-синхрон", "icons": [], "file": "cards/039.webp"}, {"suit": "Сделай", "title": "Озвучка", "icons": [], "file": "cards/040.webp"}, {"suit": "Сделай", "title": "Полевое зелье", "icons": [], "file": "cards/041.webp"}, {"suit": "Сделай", "title": "Инвентарь", "icons": [], "file": "cards/042.webp"}, {"suit": "Сделай", "title": "Битва заклинаний", "icons": ["Дуэль"], "file": "cards/043.webp"}, {"suit": "Сделай", "title": "Экскурсовод", "icons": [], "file": "cards/044.webp"}, {"suit": "Сделай", "title": "Мирные переговоры", "icons": [], "file": "cards/045.webp"}, {"suit": "Сделай", "title": "Слепой проводник", "icons": [], "file": "cards/046.webp"}, {"suit": "Сделай", "title": "Минута тишины", "icons": [], "file": "cards/047.webp"}, {"suit": "Сделай", "title": "Вайб-чек", "icons": [], "file": "cards/048.webp"}, {"suit": "Придумай", "title": "Проклятый подъезд", "icons": [], "file": "cards/049.webp"}, {"suit": "Придумай", "title": "Босс района", "icons": [], "file": "cards/050.webp"}, {"suit": "Придумай", "title": "Подземелье", "icons": [], "file": "cards/051.webp"}, {"suit": "Придумай", "title": "Жилец", "icons": [], "file": "cards/052.webp"}, {"suit": "Придумай", "title": "Легенда через 50 лет", "icons": [], "file": "cards/053.webp"}, {"suit": "Придумай", "title": "Фракции", "icons": [], "file": "cards/054.webp"}, {"suit": "Придумай", "title": "Лавка торговца", "icons": [], "file": "cards/055.webp"}, {"suit": "Придумай", "title": "Подозреваемый и алиби", "icons": ["Дуэль"], "file": "cards/056.webp"}, {"suit": "Придумай", "title": "Текстовый квест", "icons": [], "file": "cards/057.webp"}, {"suit": "Придумай", "title": "Кооп-способность", "icons": [], "file": "cards/058.webp"}, {"suit": "Придумай", "title": "Пророчество", "icons": [], "file": "cards/059.webp"}, {"suit": "Придумай", "title": "Что видел фонарь", "icons": [], "file": "cards/060.webp"}, {"suit": "Придумай", "title": "Побочные квесты", "icons": [], "file": "cards/061.webp"}, {"suit": "Придумай", "title": "Параллельный мир", "icons": [], "file": "cards/062.webp"}, {"suit": "Придумай", "title": "NPC двора", "icons": [], "file": "cards/063.webp"}, {"suit": "Профдеформация", "title": "Ребрендинг ларька", "icons": ["Блокнот"], "file": "cards/064.webp"}, {"suit": "Профдеформация", "title": "Собеседование с деревом", "icons": [], "file": "cards/065.webp"}, {"suit": "Профдеформация", "title": "Палитра района", "icons": [], "file": "cards/066.webp"}, {"suit": "Профдеформация", "title": "Резюме здания", "icons": [], "file": "cards/067.webp"}, {"suit": "Профдеформация", "title": "Шрифтовая охота", "icons": [], "file": "cards/068.webp"}, {"suit": "Профдеформация", "title": "Онбординг для голубя", "icons": [], "file": "cards/069.webp"}, {"suit": "Профдеформация", "title": "Редизайн неудобства", "icons": [], "file": "cards/070.webp"}, {"suit": "Профдеформация", "title": "Оценка 360", "icons": [], "file": "cards/071.webp"}, {"suit": "Профдеформация", "title": "Вакансия", "icons": [], "file": "cards/072.webp"}, {"suit": "Профдеформация", "title": "Брендбук района", "icons": ["Блокнот"], "file": "cards/073.webp"}, {"suit": "Профдеформация", "title": "Exit-интервью", "icons": [], "file": "cards/074.webp"}, {"suit": "Профдеформация", "title": "Фидбек на фасад", "icons": [], "file": "cards/075.webp"}, {"suit": "Блокнот", "title": "Отпечатки", "icons": ["Блокнот"], "file": "cards/076.webp"}, {"suit": "Блокнот", "title": "Фоторобот", "icons": ["Блокнот"], "file": "cards/077.webp"}, {"suit": "Блокнот", "title": "Слепой портрет", "icons": ["Блокнот"], "file": "cards/078.webp"}, {"suit": "Блокнот", "title": "Монстр из трёх линий", "icons": ["Блокнот"], "file": "cards/079.webp"}, {"suit": "Блокнот", "title": "Карта сокровищ", "icons": ["Блокнот"], "file": "cards/080.webp"}, {"suit": "Блокнот", "title": "Артефакт", "icons": ["Блокнот"], "file": "cards/081.webp"}, {"suit": "Блокнот", "title": "Существо места", "icons": ["Блокнот"], "file": "cards/082.webp"}, {"suit": "Блокнот", "title": "Испорченный рисунок", "icons": ["Блокнот"], "file": "cards/083.webp"}, {"suit": "Блокнот", "title": "Две двери", "icons": ["Блокнот"], "file": "cards/084.webp"}, {"suit": "Блокнот", "title": "Руна", "icons": ["Блокнот"], "file": "cards/085.webp"}, {"suit": "Тайная", "title": "Агент под прикрытием", "icons": ["Тайная"], "file": "cards/086.webp"}, {"suit": "Тайная", "title": "Тайный маршрут", "icons": ["Тайная"], "file": "cards/087.webp"}, {"suit": "Тайная", "title": "Папарацци", "icons": ["Тайная"], "file": "cards/088.webp"}, {"suit": "Тайная", "title": "Одна ложь", "icons": ["Тайная"], "file": "cards/089.webp"}, {"suit": "Тайная", "title": "Зеркало", "icons": ["Тайная"], "file": "cards/090.webp"}, {"suit": "Тайная", "title": "Тайный союзник", "icons": ["Тайная"], "file": "cards/091.webp"}, {"suit": "Модификатор", "title": "Немое кино", "icons": ["Модификатор"], "file": "cards/092.webp"}, {"suit": "Модификатор", "title": "Закадровый голос", "icons": ["Модификатор"], "file": "cards/093.webp"}, {"suit": "Модификатор", "title": "Только налево", "icons": ["Модификатор"], "file": "cards/094.webp"}, {"suit": "Модификатор", "title": "Шёпот", "icons": ["Модификатор"], "file": "cards/095.webp"}, {"suit": "Модификатор", "title": "Туристы", "icons": ["Модификатор"], "file": "cards/096.webp"}, {"suit": "Модификатор", "title": "Нуар", "icons": ["Модификатор"], "file": "cards/097.webp"}, {"suit": "Модификатор", "title": "Двойной квест", "icons": ["Модификатор"], "file": "cards/098.webp"}, {"suit": "Модификатор", "title": "Выбор героя", "icons": ["Модификатор"], "file": "cards/099.webp"}];
 const SUITS = ["Правила","Найди","Сними","Сделай","Придумай","Профдеформация","Блокнот","Тайная","Модификатор"];
 const ICON_COL = {"Дуэль":"var(--duel)","Блокнот":"var(--note)","Тайная":"var(--secret)","Модификатор":"var(--mod)"};
@@ -152,13 +167,13 @@ function render(){
   $("icons").innerHTML = c.icons.map(k => `<i title="${k}" style="background:${ICON_COL[k]}"></i>`).join("");
   $("prev").disabled = list.length < 2; $("next").disabled = list.length < 2;
 }
-function go(d){ pos = (pos + d + list.length) % list.length; flipped = false; rx = ry = 0;
+function go(d){ pos = (pos + d + list.length) % list.length; track(d>0?"next":"prev"); flipped = false; rx = ry = 0;
   card.classList.remove("tracking");
   card.animate([{transform:`translateX(${d*-30}px) rotateY(${d*-12}deg)`,opacity:.3},{transform:"none",opacity:1}],{duration:320,easing:"cubic-bezier(.2,.8,.2,1)"});
   apply(); render(); }
-function flip(){ flipped = !flipped; card.classList.remove("tracking"); apply(); }
+function flip(){ flipped = !flipped; track("flip", {card: list[pos].title}); card.classList.remove("tracking"); apply(); }
 function draw(){
-  setMode(false);
+  setMode(false); track("draw");
   const pool = list.length > 1 ? list : CARDS;
   let n; do { n = Math.floor(Math.random()*pool.length) } while (pool.length > 1 && n === pos && pool === list);
   if (pool !== list){ filter = null; list = CARDS; renderFilters(); }
@@ -207,7 +222,7 @@ function renderFilters(){
     return `<button class="chip" aria-pressed="${filter===s}" data-s="${s}">${s}<span class="n">${n}</span></button>`;
   }).join("");
   box.querySelectorAll(".chip").forEach(b => b.onclick = () => {
-    filter = b.dataset.s || null;
+    filter = b.dataset.s || null; track("filter", {suit: filter || "Все"});
     list = filter ? CARDS.filter(c => c.suit === filter) : CARDS;
     pos = 0; flipped = false; rx = ry = 0; renderFilters(); render(); apply(); renderGrid();
   });
@@ -219,6 +234,7 @@ function renderGrid(){
   $("grid").querySelectorAll(".thumb").forEach(b => b.onclick = () => { pos = +b.dataset.i; flipped = false; setMode(false); render(); apply(); });
 }
 function setMode(grid){
+  if (grid !== document.body.classList.contains("grid-mode")) track(grid ? "grid_open" : "grid_close");
   document.body.classList.toggle("grid-mode", grid);
   $("mode").textContent = grid ? "По одной" : "Вся колода";
 }
