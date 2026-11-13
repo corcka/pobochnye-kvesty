@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Побочные квесты · Том 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0b0c; --panel:#161618; --line:#2a2a2e; --text:#f2ede3; --muted:#9a968d;
+    --duel:#ee5a2a; --note:#f7cf4a; --secret:#2f7fe0; --mod:#43b231;
+    --card-w:min(640px, 86vw, calc((100vh - 260px) * 1.265));
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Onest,system-ui,sans-serif}
+  body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(60% 50% at 50% 40%, rgba(255,255,255,.06), transparent 70%);}
+
+  header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 24px 6px}
+  .logo{display:flex;align-items:center;gap:10px;margin-right:auto}
+  .dots{display:grid;grid-template-columns:repeat(2,10px);gap:3px}
+  .dots i{width:10px;height:10px;border-radius:50%;border:1.5px solid #000;display:block}
+  .logo b{font-family:Unbounded;font-weight:900;font-size:18px;letter-spacing:-.02em}
+  .logo small{font-family:Unbounded;font-weight:700;font-size:10px;background:var(--duel);color:#fff;padding:3px 7px;border-radius:4px;letter-spacing:.06em}
+  .tagline{display:block;color:var(--muted);font-size:12px;max-width:520px;line-height:1.35}
+
+  .bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  button{font:inherit;color:inherit;cursor:pointer}
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:500;transition:background .15s,border-color .15s}
+  .chip:hover{border-color:#4a4a50}
+  .chip[aria-pressed="true"]{background:var(--text);color:#111;border-color:var(--text)}
+  .chip .n{opacity:.55;margin-left:4px;font-weight:400}
+  .primary{background:var(--note);color:#111;border:0;border-radius:20px;padding:8px 16px;font-weight:700;font-size:13px}
+  .ghost{background:transparent;border:1px solid var(--line);border-radius:20px;padding:7px 14px;font-size:13px;font-weight:500}
+  .ghost:hover{border-color:#4a4a50}
+
+  main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 16px 18px}
+
+  /* stage */
+  .stage{display:flex;align-items:center;gap:20px}
+  .nav{width:52px;height:52px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;font-size:22px;flex:none;transition:transform .15s,border-color .15s}
+  .nav:hover{border-color:#5a5a60;transform:scale(1.06)}
+  .nav:disabled{opacity:.3;cursor:default;transform:none}
+  .scene{width:var(--card-w);aspect-ratio:673/532;perspective:1400px;touch-action:pan-y}
+  .card{position:relative;width:100%;height:100%;transform-style:preserve-3d;
+        transition:transform .55s cubic-bezier(.2,.8,.2,1);will-change:transform}
+  .card.tracking{transition:transform .08s linear}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+        border-radius:10.53% / 13.33%;overflow:hidden;
+        box-shadow:0 30px 60px -20px rgba(0,0,0,.8),0 10px 20px -10px rgba(0,0,0,.6)}
+  .face img{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none}
+  .back{transform:rotateY(180deg)}
+  .glare{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;opacity:0;transition:opacity .3s;
+         background:radial-gradient(circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,.75), rgba(255,255,255,0) 55%)}
+  .sheen{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;mix-blend-mode:overlay;
+         background:linear-gradient(115deg, transparent 30%, rgba(255,255,255,.25) var(--sx,50%), transparent 70%)}
+  .scene:hover .glare,.scene:hover .sheen{opacity:1}
+
+  .meta{margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;color:var(--muted);font-size:13px}
+  .meta .title{color:var(--text);font-weight:600;font-size:15px}
+  .meta .icons{display:flex;gap:4px}
+  .meta .icons i{width:12px;height:12px;border-radius:50%;display:block;border:1.5px solid #000}
+  .hint{margin-top:6px;color:#5f5c56;font-size:12px;text-align:center}
+
+  /* grid */
+  .grid{display:none;width:100%;max-width:1400px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;padding:6px 8px 30px}
+  body.grid-mode .grid{display:grid}
+  body.grid-mode .single{display:none}
+  .thumb{border:0;padding:0;background:none;border-radius:10.53% / 13.33%;overflow:hidden;aspect-ratio:673/532;transition:transform .2s;box-shadow:0 10px 24px -12px rgba(0,0,0,.8)}
+  .thumb:hover{transform:translateY(-3px) rotate(-.6deg)}
+  .thumb img{width:100%;height:100%;display:block}
+
+  @media (max-width:640px){
+    .nav{display:none}
+    header{padding:14px 14px 4px}
+    .tagline{font-size:11px;margin-top:4px}
+  }
+  @media (prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <span class="dots"><i style="background:var(--duel)"></i><i style="background:var(--secret)"></i><i style="background:var(--note)"></i><i style="background:var(--mod)"></i></span>
+    <div>
+      <b>Побочные квесты</b> <small>ТОМ 1</small>
+      <span class="tagline">Я переродился в спальном районе у Пятницкого шоссе, и теперь каждые выходные мы с напарником выполняем побочные квесты, которые нам выдаёт колода карт</span>
+    </div>
+  </div>
+  <button class="primary" id="draw">Тянуть карту</button>
+  <button class="ghost" id="mode">Вся колода</button>
+</header>
+
+<div class="bar" id="filters" style="padding:6px 24px 0"></div>
+
+<main>
+  <div class="single">
+    <div class="stage">
+      <button class="nav" id="prev" aria-label="Предыдущая">←</button>
+      <div class="scene" id="scene">
+        <div class="card" id="card">
+          <div class="face front"><img id="front" alt=""><div class="sheen"></div><div class="glare"></div></div>
+          <div class="face back"><img id="backImg" alt="Рубашка"><div class="sheen"></div><div class="glare"></div></div>
+        </div>
+      </div>
+      <button class="nav" id="next" aria-label="Следующая">→</button>
+    </div>
+    <div class="meta"><span id="counter"></span><span class="title" id="title"></span><span class="icons" id="icons"></span></div>
+    <div class="hint">← → листать · пробел или клик — перевернуть · R — случайная карта</div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<script>
+const CARDS = [{"suit": "Правила", "title": "Как играть", "icons": [], "file": "cards/000.webp"}, {"suit": "Правила", "title": "Значки", "icons": ["Дуэль", "Тайная", "Блокнот", "Модификатор"], "file": "cards/001.webp"}, {"suit": "Найди", "title": "Место преступления", "icons": ["Дуэль"], "file": "cards/002.webp"}, {"suit": "Найди", "title": "Ингредиенты для зелья", "icons": [], "file": "cards/003.webp"}, {"suit": "Найди", "title": "Собери фазу", "icons": [], "file": "cards/004.webp"}, {"suit": "Найди", "title": "Портал", "icons": [], "file": "cards/005.webp"}, {"suit": "Найди", "title": "Точка сохранения", "icons": [], "file": "cards/006.webp"}, {"suit": "Найди", "title": "Лица вокруг", "icons": [], "file": "cards/007.webp"}, {"suit": "Найди", "title": "Пасхалка", "icons": [], "file": "cards/008.webp"}, {"suit": "Найди", "title": "Шифровка", "icons": [], "file": "cards/009.webp"}, {"suit": "Найди", "title": "Сундук с лутом", "icons": [], "file": "cards/010.webp"}, {"suit": "Найди", "title": "Дары воды", "icons": [], "file": "cards/011.webp"}, {"suit": "Найди", "title": "Древний артефакт", "icons": ["Дуэль"], "file": "cards/012.webp"}, {"suit": "Найди", "title": "Строго по цвету", "icons": [], "file": "cards/013.webp"}, {"suit": "Найди", "title": "Трофей", "icons": [], "file": "cards/014.webp"}, {"suit": "Найди", "title": "Маскировка", "icons": [], "file": "cards/015.webp"}, {"suit": "Найди", "title": "Бестиарий", "icons": [], "file": "cards/016.webp"}, {"suit": "Найди", "title": "Призрачное место", "icons": [], "file": "cards/017.webp"}, {"suit": "Найди", "title": "Это база", "icons": ["Дуэль"], "file": "cards/018.webp"}, {"suit": "Сними", "title": "Загрузочный экран", "icons": [], "file": "cards/019.webp"}, {"suit": "Сними", "title": "Улика под увеличением", "icons": ["Дуэль"], "file": "cards/020.webp"}, {"suit": "Сними", "title": "Ачивка разблокирована", "icons": [], "file": "cards/021.webp"}, {"suit": "Сними", "title": "Постер", "icons": [], "file": "cards/022.webp"}, {"suit": "Сними", "title": "Обложка альбома", "icons": [], "file": "cards/023.webp"}, {"suit": "Сними", "title": "Вещдок", "icons": [], "file": "cards/024.webp"}, {"suit": "Сними", "title": "Без контекста", "icons": ["Дуэль"], "file": "cards/025.webp"}, {"suit": "Сними", "title": "Две версии", "icons": [], "file": "cards/026.webp"}, {"suit": "Сними", "title": "Кат-сцена", "icons": [], "file": "cards/027.webp"}, {"suit": "Сними", "title": "По ту сторону", "icons": [], "file": "cards/028.webp"}, {"suit": "Сними", "title": "Патчноут", "icons": [], "file": "cards/029.webp"}, {"suit": "Сними", "title": "Карточка существа", "icons": [], "file": "cards/030.webp"}, {"suit": "Сними", "title": "Хоррор", "icons": [], "file": "cards/031.webp"}, {"suit": "Сними", "title": "Игрушечный город", "icons": [], "file": "cards/032.webp"}, {"suit": "Сними", "title": "Выбор персонажа", "icons": [], "file": "cards/033.webp"}, {"suit": "Сними", "title": "Три подсказки", "icons": ["Дуэль"], "file": "cards/034.webp"}, {"suit": "Сними", "title": "POV: главный герой", "icons": [], "file": "cards/035.webp"}, {"suit": "Сделай", "title": "Квест «Принеси»", "icons": [], "file": "cards/036.webp"}, {"suit": "Сделай", "title": "Ритуал на удачу", "icons": [], "file": "cards/037.webp"}, {"suit": "Сделай", "title": "Походка класса", "icons": [], "file": "cards/038.webp"}, {"suit": "Сделай", "title": "Кооп-синхрон", "icons": [], "file": "cards/039.webp"}, {"suit": "Сделай", "title": "Озвучка", "icons": [], "file": "cards/040.webp"}, {"suit": "Сделай", "title": "Полевое зелье", "icons": [], "file": "cards/041.webp"}, {"suit": "Сделай", "title": "Инвентарь", "icons": [], "file": "cards/042.webp"}, {"suit": "Сделай", "title": "Битва заклинаний", "icons": ["Дуэль"], "file": "cards/043.webp"}, {"suit": "Сделай", "title": "Экскурсовод", "icons": [], "file": "cards/044.webp"}, {"suit": "Сделай", "title": "Мирные переговоры", "icons": [], "file": "cards/045.webp"}, {"suit": "Сделай", "title": "Слепой проводник", "icons": [], "file": "cards/046.webp"}, {"suit": "Сделай", "title": "Минута тишины", "icons": [], "file": "cards/047.webp"}, {"suit": "Сделай", "title": "Вайб-чек", "icons": [], "file": "cards/048.webp"}, {"suit": "Придумай", "title": "Проклятый подъезд", "icons": [], "file": "cards/049.webp"}, {"suit": "Придумай", "title": "Босс района", "icons": [], "file": "cards/050.webp"}, {"suit": "Придумай", "title": "Подземелье", "icons": [], "file": "cards/051.webp"}, {"suit": "Придумай", "title": "Жилец", "icons": [], "file": "cards/052.webp"}, {"suit": "Придумай", "title": "Легенда через 50 лет", "icons": [], "file": "cards/053.webp"}, {"suit": "Придумай", "title": "Фракции", "icons": [], "file": "cards/054.webp"}, {"suit": "Придумай", "title": "Лавка торговца", "icons": [], "file": "cards/055.webp"}, {"suit": "Придумай", "title": "Подозреваемый и алиби", "icons": ["Дуэль"], "file": "cards/056.webp"}, {"suit": "Придумай", "title": "Текстовый квест", "icons": [], "file": "cards/057.webp"}, {"suit": "Придумай", "title": "Кооп-способность", "icons": [], "file": "cards/058.webp"}, {"suit": "Придумай", "title": "Пророчество", "icons": [], "file": "cards/059.webp"}, {"suit": "Придумай", "title": "Что видел фонарь", "icons": [], "file": "cards/060.webp"}, {"suit": "Придумай", "title": "Побочные квесты", "icons": [], "file": "cards/061.webp"}, {"suit": "Придумай", "title": "Параллельный мир", "icons": [], "file": "cards/062.webp"}, {"suit": "Придумай", "title": "NPC двора", "icons": [], "file": "cards/063.webp"}, {"suit": "Профдеформация", "title": "Ребрендинг ларька", "icons": ["Блокнот"], "file": "cards/064.webp"}, {"suit": "Профдеформация", "title": "Собеседование с деревом", "icons": [], "file": "cards/065.webp"}, {"suit": "Профдеформация", "title": "Палитра района", "icons": [], "file": "cards/066.webp"}, {"suit": "Профдеформация", "title": "Резюме здания", "icons": [], "file": "cards/067.webp"}, {"suit": "Профдеформация", "title": "Шрифтовая охота", "icons": [], "file": "cards/068.webp"}, {"suit": "Профдеформация", "title": "Онбординг для голубя", "icons": [], "file": "cards/069.webp"}, {"suit": "Профдеформация", "title": "Редизайн неудобства", "icons": [], "file": "cards/070.webp"}, {"suit": "Профдеформация", "title": "Оценка 360", "icons": [], "file": "cards/071.webp"}, {"suit": "Профдеформация", "title": "Вакансия", "icons": [], "file": "cards/072.webp"}, {"suit": "Профдеформация", "title": "Брендбук района", "icons": ["Блокнот"], "file": "cards/073.webp"}, {"suit": "Профдеформация", "title": "Exit-интервью", "icons": [], "file": "cards/074.webp"}, {"suit": "Профдеформация", "title": "Фидбек на фасад", "icons": [], "file": "cards/075.webp"}, {"suit": "Блокнот", "title": "Отпечатки", "icons": ["Блокнот"], "file": "cards/076.webp"}, {"suit": "Блокнот", "title": "Фоторобот", "icons": ["Блокнот"], "file": "cards/077.webp"}, {"suit": "Блокнот", "title": "Слепой портрет", "icons": ["Блокнот"], "file": "cards/078.webp"}, {"suit": "Блокнот", "title": "Монстр из трёх линий", "icons": ["Блокнот"], "file": "cards/079.webp"}, {"suit": "Блокнот", "title": "Карта сокровищ", "icons": ["Блокнот"], "file": "cards/080.webp"}, {"suit": "Блокнот", "title": "Артефакт", "icons": ["Блокнот"], "file": "cards/081.webp"}, {"suit": "Блокнот", "title": "Существо места", "icons": ["Блокнот"], "file": "cards/082.webp"}, {"suit": "Блокнот", "title": "Испорченный рисунок", "icons": ["Блокнот"], "file": "cards/083.webp"}, {"suit": "Блокнот", "title": "Две двери", "icons": ["Блокнот"], "file": "cards/084.webp"}, {"suit": "Блокнот", "title": "Руна", "icons": ["Блокнот"], "file": "cards/085.webp"}, {"suit": "Тайная", "title": "Агент под прикрытием", "icons": ["Тайная"], "file": "cards/086.webp"}, {"suit": "Тайная", "title": "Тайный маршрут", "icons": ["Тайная"], "file": "cards/087.webp"}, {"suit": "Тайная", "title": "Папарацци", "icons": ["Тайная"], "file": "cards/088.webp"}, {"suit": "Тайная", "title": "Одна ложь", "icons": ["Тайная"], "file": "cards/089.webp"}, {"suit": "Тайная", "title": "Зеркало", "icons": ["Тайная"], "file": "cards/090.webp"}, {"suit": "Тайная", "title": "Тайный союзник", "icons": ["Тайная"], "file": "cards/091.webp"}, {"suit": "Модификатор", "title": "Немое кино", "icons": ["Модификатор"], "file": "cards/092.webp"}, {"suit": "Модификатор", "title": "Закадровый голос", "icons": ["Модификатор"], "file": "cards/093.webp"}, {"suit": "Модификатор", "title": "Только налево", "icons": ["Модификатор"], "file": "cards/094.webp"}, {"suit": "Модификатор", "title": "Шёпот", "icons": ["Модификатор"], "file": "cards/095.webp"}, {"suit": "Модификатор", "title": "Туристы", "icons": ["Модификатор"], "file": "cards/096.webp"}, {"suit": "Модификатор", "title": "Нуар", "icons": ["Модификатор"], "file": "cards/097.webp"}, {"suit": "Модификатор", "title": "Двойной квест", "icons": ["Модификатор"], "file": "cards/098.webp"}, {"suit": "Модификатор", "title": "Выбор героя", "icons": ["Модификатор"], "file": "cards/099.webp"}];
+const SUITS = ["Правила","Найди","Сними","Сделай","Придумай","Профдеформация","Блокнот","Тайная","Модификатор"];
+const ICON_COL = {"Дуэль":"var(--duel)","Блокнот":"var(--note)","Тайная":"var(--secret)","Модификатор":"var(--mod)"};
+const BACK = "cards/back.webp";
+let filter = null, list = CARDS, pos = 0, flipped = false;
+let rx = 0, ry = 0;
+
+const $ = id => document.getElementById(id);
+const NB_WORDS = ['или','что','как','чтобы','если','через','после','перед','между','около','когда','потом','либо','будто','пока','даже','лишь','возле','вокруг','вместо','кроме','среди','сквозь','против','также','тоже','зато','хотя','пусть','чем','где','куда','при','про','над','под','для','без'];
+function nb(s){
+  return s.replace(/(^|[\s\u00a0«(])([А-Яа-яЁё]{1,3}|\d+) /g, (m,a,w)=>a+w+'\u00a0')
+          .replace(/(^|[\s\u00a0«(])([А-Яа-яЁё]{1,3}|\d+) /g, (m,a,w)=>a+w+'\u00a0')
+          .replace(new RegExp('(^|[\\s\\u00a0«(])('+NB_WORDS.join('|')+') ','gi'), (m,a,w)=>a+w+'\u00a0')
+          .replace(/ ([—–])/g,'\u00a0$1');
+}
+const card = $("card"), scene = $("scene");
+
+// preload
+CARDS.forEach(c => { const i = new Image(); i.src = c.file; });
+
+function backFor(c){
+  // правила двусторонние: «Как играть» ↔ «Значки»
+  if (c.suit === "Правила") return CARDS.find(x => x.suit === "Правила" && x !== c).file;
+  return BACK;
+}
+function apply(){
+  card.style.transform = `rotateY(${(flipped?180:0)+ry}deg) rotateX(${rx}deg)`;
+}
+function render(){
+  const c = list[pos];
+  $("front").src = c.file; $("front").alt = c.suit + " — " + c.title;
+  $("backImg").src = backFor(c);
+  $("counter").textContent = `${pos+1} / ${list.length}`;
+  $("title").textContent = nb(c.suit + " · " + c.title);
+  $("icons").innerHTML = c.icons.map(k => `<i title="${k}" style="background:${ICON_COL[k]}"></i>`).join("");
+  $("prev").disabled = list.length < 2; $("next").disabled = list.length < 2;
+}
+function go(d){ pos = (pos + d + list.length) % list.length; flipped = false; rx = ry = 0;
+  card.classList.remove("tracking");
+  card.animate([{transform:`translateX(${d*-30}px) rotateY(${d*-12}deg)`,opacity:.3},{transform:"none",opacity:1}],{duration:320,easing:"cubic-bezier(.2,.8,.2,1)"});
+  apply(); render(); }
+function flip(){ flipped = !flipped; card.classList.remove("tracking"); apply(); }
+function draw(){
+  setMode(false);
+  const pool = list.length > 1 ? list : CARDS;
+  let n; do { n = Math.floor(Math.random()*pool.length) } while (pool.length > 1 && n === pos && pool === list);
+  if (pool !== list){ filter = null; list = CARDS; renderFilters(); }
+  pos = n; flipped = true; rx = ry = 0; render(); apply();
+  setTimeout(() => { flipped = false; card.classList.remove("tracking"); apply(); }, 380);
+}
+
+// tilt
+scene.addEventListener("pointermove", e => {
+  if (e.pointerType === "touch") return;
+  const r = scene.getBoundingClientRect();
+  const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+  ry = (px - .5) * 22 * (flipped ? -1 : 1); rx = (.5 - py) * 18;
+  card.classList.add("tracking"); apply();
+  card.querySelectorAll(".glare").forEach(g => { g.style.setProperty("--gx", (flipped?1-px:px)*100+"%"); g.style.setProperty("--gy", py*100+"%"); });
+  card.querySelectorAll(".sheen").forEach(s => s.style.setProperty("--sx", (flipped?1-px:px)*100+"%"));
+});
+scene.addEventListener("pointerleave", () => { rx = ry = 0; card.classList.remove("tracking"); apply(); });
+
+// click vs swipe
+let sx = null, sy = null;
+scene.addEventListener("pointerdown", e => { sx = e.clientX; sy = e.clientY; });
+scene.addEventListener("pointerup", e => {
+  if (sx === null) return;
+  const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? 1 : -1); else flip();
+});
+
+$("prev").onclick = () => go(-1);
+$("next").onclick = () => go(1);
+$("draw").onclick = draw;
+document.addEventListener("keydown", e => {
+  if (document.body.classList.contains("grid-mode")) return;
+  if (e.key === "ArrowRight") go(1);
+  else if (e.key === "ArrowLeft") go(-1);
+  else if (e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+  else if (e.key.toLowerCase() === "r" || e.key.toLowerCase() === "к") draw();
+});
+
+// filters
+function renderFilters(){
+  const box = $("filters");
+  const all = `<button class="chip" aria-pressed="${filter===null}" data-s="">Все<span class="n">${CARDS.length}</span></button>`;
+  box.innerHTML = all + SUITS.map(s => {
+    const n = CARDS.filter(c => c.suit === s).length;
+    return `<button class="chip" aria-pressed="${filter===s}" data-s="${s}">${s}<span class="n">${n}</span></button>`;
+  }).join("");
+  box.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    filter = b.dataset.s || null;
+    list = filter ? CARDS.filter(c => c.suit === filter) : CARDS;
+    pos = 0; flipped = false; rx = ry = 0; renderFilters(); render(); apply(); renderGrid();
+  });
+}
+
+// grid
+function renderGrid(){
+  $("grid").innerHTML = list.map((c,i) => `<button class="thumb" data-i="${i}" title="${c.suit} — ${c.title}"><img loading="lazy" src="${c.file}" alt="${c.suit} — ${c.title}"></button>`).join("");
+  $("grid").querySelectorAll(".thumb").forEach(b => b.onclick = () => { pos = +b.dataset.i; flipped = false; setMode(false); render(); apply(); });
+}
+function setMode(grid){
+  document.body.classList.toggle("grid-mode", grid);
+  $("mode").textContent = grid ? "По одной" : "Вся колода";
+}
+$("mode").onclick = () => setMode(!document.body.classList.contains("grid-mode"));
+
+renderFilters(); render(); renderGrid(); apply();
+</script>
+</body>
+</html>
